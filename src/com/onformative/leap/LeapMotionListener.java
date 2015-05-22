@@ -37,6 +37,7 @@ import com.leapmotion.leap.Frame;
 import com.leapmotion.leap.Gesture;
 import com.leapmotion.leap.Gesture.State;
 import com.leapmotion.leap.GestureList;
+import com.leapmotion.leap.Image;
 import com.leapmotion.leap.KeyTapGesture;
 import com.leapmotion.leap.Listener;
 import com.leapmotion.leap.ScreenTapGesture;
@@ -67,6 +68,8 @@ class LeapMotionListener extends Listener {
   public LeapMotionListener(LeapMotionP5 leap) {
     this.leap = leap;
     this.leap.currentFrame = new Frame();
+    this.leap.currentLeftImage = new Image();
+    this.leap.currentRightImage = new Image();
     this.leap.lastFrames = new LinkedList<Frame>();
     this.leap.lastFramesInclProperTimestamps = new ConcurrentSkipListMap<Date, Frame>();
     this.leap.oldFrames = new CopyOnWriteArrayList<Frame>();
@@ -216,7 +219,9 @@ class LeapMotionListener extends Listener {
   public void onFrame(Controller controller) {
     Frame frame = controller.frame();
     this.leap.currentFrame = frame;
-
+    this.leap.currentLeftImage = controller.images().get(0);
+    this.leap.currentRightImage = controller.images().get(1);
+    
     processGestures(controller);
 
     // adding frames the list. making sure that only the newest frames are saved in order

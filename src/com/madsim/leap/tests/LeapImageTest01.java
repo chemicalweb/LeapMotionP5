@@ -9,18 +9,18 @@ public class LeapImageTest01 extends PApplet {
 	
 	private static final long serialVersionUID = 1L;
 
-	private LeapMotionP5 lmp5;
+	private LeapMotionP5 leap;
 	
 	public void setup() {
-		size(800, 600);
+		size(640, 480);
 		
-		lmp5 = new LeapMotionP5(this);
+		leap = new LeapMotionP5(this);
 	}
 	
 	public void draw() {
-		PImage img = lmp5.getImage();
-		if(img != null) {
-			image(img, 0, 0);
+		PImage l_img = leap.getLeftImage();
+		if(l_img != null) {
+			image(l_img, 0, 0, 640, 480);
 		}
 	}
 
