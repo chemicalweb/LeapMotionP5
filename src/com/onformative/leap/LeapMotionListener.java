@@ -147,8 +147,6 @@ class LeapMotionListener extends Listener {
           break;
       }
     }
-
-
   }
 
   private void printGestureDetails(Gesture gesture, Controller controller) {
@@ -201,7 +199,7 @@ class LeapMotionListener extends Listener {
 
   private void processGestures(Controller controller) {
     GestureList list = controller.frame().gestures();
-    if (list.empty() == false) {
+    if (!list.isEmpty()) {
       for (int i = 0; i < list.count(); i++) {
         Gesture gesture = list.get(i);
         invokeCallback(gesture);

@@ -35,14 +35,16 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import processing.core.PApplet;
+import processing.core.PImage;
 import processing.core.PVector;
 
-import com.leapmotion.leap.Config;
 import com.leapmotion.leap.Controller;
 import com.leapmotion.leap.Finger;
 import com.leapmotion.leap.Frame;
 import com.leapmotion.leap.Gesture.Type;
 import com.leapmotion.leap.Hand;
+import com.leapmotion.leap.Image;
+import com.leapmotion.leap.ImageList;
 import com.leapmotion.leap.Pointable;
 import com.leapmotion.leap.ScreenList;
 import com.leapmotion.leap.Tool;
@@ -51,8 +53,8 @@ import com.leapmotion.leap.Vector;
 /**
  * LeapMotionP5.java
  * 
- * @author Marcel Schwittlick
- * @modified 15.03.2013
+ * @author Marcel Schwittlick, Denny Koch
+ * @modified 22.05.2015
  * 
  */
 public class LeapMotionP5 {
@@ -82,7 +84,7 @@ public class LeapMotionP5 {
 
   /**
    * this class gives you some high level access to the data tracked and recorded by the leap. it
-   * gives you a different way of access than the original leap sdk and transoforms all data into
+   * gives you a different way of access than the original leap sdk and transforms all data into
    * processing equivalent datatypes.
    * 
    * @param p PApplet the processing applet
@@ -271,6 +273,42 @@ public class LeapMotionP5 {
     return frameBefore;
   }
 
+  /**
+   * retuns the last image the leap saw
+   * 
+   * @return the image
+   */
+  public PImage getImage() {
+		Frame frame = controller.frame();
+		PImage p_image = null;
+
+		if (frame.isValid()) {
+			ImageList images = frame.images();
+			for (Image image : images) {
+				// Processing PImage class
+				p_image = p.createImage(image.width(), image.height(), PApplet.RGB);
+				p_image.loadPixels();
+
+				// Get byte array containing the image data from Image object
+				byte[] imageData = image.data();
+
+				// Copy image data into display object, in this case PImage defined in Processing
+				for (int i = 0; i < image.width() * image.height(); i++) {
+					int r = (imageData[i] & 0xFF) << 16; // convert to unsigned and shift into place
+					int g = (imageData[i] & 0xFF) << 8;
+					int b = imageData[i] & 0xFF;
+					p_image.pixels[i] = r | g | b;
+				}
+
+				// Show the image
+				p_image.updatePixels();
+				break;
+			}
+		}
+		
+		return p_image;
+	}
+  
   /**
    * returns a CopyOnWriteArrayList<Frame> containing all recently buffered frames.
    * 
